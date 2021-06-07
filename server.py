@@ -19,6 +19,8 @@ import datetime
 import time
 import yaml
 import json
+import signal
+signal.signal(signal.SIGINT, signal.default_int_handler)
 
 HTML_PATH = os.path.join( os.getcwd(), "dist")
 
@@ -53,7 +55,12 @@ async def start_tornado(port):
         (r"/socket.io/", socketio.get_tornado_handler(sio)),
         (r"/(.*)", tornado.web.StaticFileHandler, {"path": HTML_PATH , "default_filename": "index.html" })
     ])
-    app.listen(port)
+    try:
+        app.listen(port)
+        return True
+    except OSError:
+        logging.critical("Can't listen on port %s" %port)
+        return False
 
 async def send_outputs_from_queue():     
      logging.debug("Send Sockets Loop Started!")
@@ -65,15 +72,14 @@ async def send_outputs_from_queue():
         except Empty:
             await asyncio.sleep(0.1)   
 
-
 async def async_services(port):
-    await start_tornado(port)
-    await asyncio.create_task( send_outputs_from_queue() )
+    if await start_tornado(port):
+        await asyncio.create_task( send_outputs_from_queue() )
 
 def tornadoThread(param):
     asyncio.run( async_services(args.port) )
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s UTC %(levelname)s %(module)s(%(funcName)s) [%(process)d-%(thread)d-%(threadName)s]: %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s UTC %(levelname)s %(module)s(%(funcName)s) [%(process)d-%(thread)d-%(threadName)s]: %(message)s')
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', help='Specify the configuration file. Default is config.yaml in current directory', nargs='?', default="config.yaml")
 parser.add_argument('-p', '--port', help='Specify the tcp port for the web server. Default is 8000', nargs='?', default="8000")
@@ -81,17 +87,20 @@ args = parser.parse_args()
 
 logging.info("Starting server on port %s " % args.port)
 thread = Thread(target = tornadoThread, args = (10, ) , name="TornadoThread")
+thread.daemon = True
 thread.start()
 
-while True:
+while thread.is_alive():
     try:
-        item=q_input.get()
-        logging.debug("Pulled %s out of queue" %item)
+        item=q_input.get(timeout=1) # Timeout is set to avoid blocking ctrl+c
         output = json.dumps(item, sort_keys=False, indent=4)
+        logging.critical("Pulled item out of queue.")
         q_output.put("RECEIVED:\n"+output+"\n")
+    except Empty:
+        logging.debug("Nothing in queue to process.")       
     except KeyboardInterrupt:
-        logging.critical("Keyboard interrupt occurred on thread, quitting!")
-        thread.kill()
+        logging.critical("Keyboard interrupt occurred on thread, quitting main!")
         sys.exit()
     except Exception as ex:
         logging.exception("TASK MAY HAVE BEEN IMPROPERLY HANDLED: " + str(ex) + " ---- " + str(sys.exc_info()[0]))
+        sys.exit()

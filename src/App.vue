@@ -21,7 +21,7 @@
           </template>
         </Input>
       </div>
-      <Output :text="output" class="d-flex flex-grow-1 border border-2 rounded-3 m-2"/>
+      <Output :text="output" class="d-flex flex-grow-1 m-2"/>
     </div>    
   </div>
 

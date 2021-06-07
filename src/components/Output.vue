@@ -12,6 +12,7 @@
           </div>
         </div>
         <textarea class="d-flex flex-grow-1 h-100 form-control terminal text-white bg-dark" id="TextAreaOutput" :value="text" ></textarea>
+        
       </div>
     </div>
 </template>
