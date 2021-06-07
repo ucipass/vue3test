@@ -1,16 +1,16 @@
 <template>
-<div :id="id" class="container mt-3 mb-3 p-0">
+<div :id="id" class="mt-3 mb-3 p-0">
 
-    <div v-if="inputs.length" >
+    <!-- MAIN INPUT -->
+    <div v-if="inputs.length" class="w-100">
 
-    <!-- HEADER -->
-    <div >
-      <slot name="header" v-bind:header="values">
-      </slot>
-    </div>
-
-    <!-- BODY WITH DYNAMIC INPUTS   -->
-      <div class="d-flex" >
+      <!-- HEADER -->
+      <div >
+        <slot name="header" v-bind:header="values">
+        </slot>
+      </div>
+      <!-- BODY WITH DYNAMIC INPUTS   -->
+      <div class="d-flex flex-grow-1" >
         <div class="d-flex flex-column justify-content-between">
             <div v-for="input in inputs" :key="input.id" class="m-1 d-flex justify-content-end">
                   <label class="m-1 float-right text-nowrap" :for="input.id">{{input.label}}</label>
@@ -24,7 +24,7 @@
             </div>
         </div>            
         <div class="d-flex flex-column justify-content-between w-100">
-            <div v-for="input in inputs" :key="input.id" class=" m-1">
+            <div v-for="input in inputs" :key="input.id" class="m-1">
                     <select v-if="input.type=='select'" 
                       class="form-select" 
                       v-model="values[input.id]" 
@@ -44,18 +44,17 @@
             </div>            
         </div>
       </div>
-
       <!-- FOOTER -->
       <div class="d-flex justify-content-end m-1">
         <slot name="footer" v-bind:footer="values">
         <!-- FOOTER FALLBACK -->    
         </slot>
-
       </div>
+
     </div>    
 
     <!-- ALERT IF NO INPUT CONFIG AVAILABLE -->
-    <div v-else class="alert alert-danger" role="alert">
+    <div v-else class="alert alert-danger w-100" role="alert">
       <p>{{error_msg}}</p>
     </div>
  

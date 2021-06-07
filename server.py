@@ -17,6 +17,8 @@ import socketio
 import select
 import datetime
 import time
+import yaml
+import json
 
 HTML_PATH = os.path.join( os.getcwd(), "dist")
 
@@ -27,7 +29,7 @@ sio = socketio.AsyncServer(async_mode='tornado',cors_allowed_origins='*')
 @sio.event
 async def connect(sid, environ):
     print('connect ', sid)
-    print(environ)
+    # print(environ)
 @sio.event
 async def disconnect(sid):
     lastsid = sid
@@ -37,6 +39,13 @@ async def data(sid, msg):
     logging.debug("Received Message %s from %s" %(msg, sid) )
     q_input.put(msg,True)
     return "Received Successfully"
+   
+@sio.event
+async def config(sid,msg):
+    logging.debug("Config requested from %s" %(sid) )
+    with open(r'dist/inputs.yaml') as file:
+        json = yaml.load(file, Loader=yaml.FullLoader)
+        return json
    
 async def start_tornado(port):
     app = tornado.web.Application([
@@ -54,7 +63,7 @@ async def send_outputs_from_queue():
             logging.info("Sending event")
             await sio.emit( "data", json )
         except Empty:
-            await asyncio.sleep(1)   
+            await asyncio.sleep(0.1)   
 
 
 async def async_services(port):
@@ -78,8 +87,11 @@ while True:
     try:
         item=q_input.get()
         logging.debug("Pulled %s out of queue" %item)
+        output = json.dumps(item, sort_keys=False, indent=4)
+        q_output.put("RECEIVED:\n"+output+"\n")
     except KeyboardInterrupt:
         logging.critical("Keyboard interrupt occurred on thread, quitting!")
+        thread.kill()
         sys.exit()
     except Exception as ex:
         logging.exception("TASK MAY HAVE BEEN IMPROPERLY HANDLED: " + str(ex) + " ---- " + str(sys.exc_info()[0]))
