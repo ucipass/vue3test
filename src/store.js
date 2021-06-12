@@ -13,7 +13,6 @@ const store = createStore({
     },
     mutations: {
       setInputValue (state,payload) {
-        console.log("VUEX Values",payload)
         if ( ! state[payload.name] ) { 
           return console.log (`No input name ${payload.name} found!`)
         }
@@ -23,7 +22,6 @@ const store = createStore({
         state[payload.name].values[payload.id] = payload.value
       },
       setInputRows (state,payload) {
-        console.log("VUEX Rows",payload)
         if ( ! state[payload.name] ) { 
           return console.log (`No input name ${payload.name} found!`)
         }
@@ -37,10 +35,8 @@ const store = createStore({
             input.values[row.id] = row.value
           }
         }
-
       },
       setOutputText (state,payload) {
-        // console.log("VUEX Rows",payload)
         if ( ! state[payload.name] ) { 
           return console.log (`No output name ${payload.name} found!`)
         }

@@ -11,7 +11,14 @@
             </button>
           </div>
         </div>
-        <textarea class="d-flex flex-grow-1 h-100 form-control terminal text-white bg-dark" id="TextAreaOutput" rows="10" :value="$store.state[name].text" ></textarea>
+        <textarea 
+          v-show = "$store.state[name].text.length > 0"
+          class="d-flex flex-grow-1 h-100 form-control terminal text-white bg-dark"
+          id="TextAreaOutput"
+          rows="10" 
+          :value="$store.state[name].text" >
+
+        </textarea>
         
       </div>
     </div>

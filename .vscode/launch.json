@@ -2,25 +2,11 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "vuejs: pwa-chrome",
         "type": "pwa-chrome",
         "request": "launch",
+        "name": "Launch Chrome against localhost",
         "url": "http://localhost:8080",
-        "webRoot": "${workspaceFolder}/src",
-        "sourceMapPathOverrides": {
-          "webpack:///src/*": "${webRoot}/*"
-        }
-      },
-      {
-        "name": "vuejs: chrome",
-        "type": "chrome",
-        "request": "launch",
-        "url": "http://localhost:8080",
-        "webRoot": "${workspaceFolder}/src",
-        "breakOnLoad": true,
-        "sourceMapPathOverrides": {
-          "webpack:///src/*": "${webRoot}/*"
-        }
-      }
+        "webRoot": "${workspaceFolder}"
+    }
     ]
 }

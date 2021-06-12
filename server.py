@@ -16,9 +16,12 @@ with open(r'inputs.yaml') as file:
 
 
 def encode(text):
-    message_bytes = text.encode('ascii')
-    base64_bytes = base64.b64encode(message_bytes)
-    base64_message = base64_bytes.decode('ascii')
+    try:
+        message_bytes = text.encode()
+        base64_bytes = base64.b64encode(message_bytes)
+        base64_message = base64_bytes.decode()
+    except:
+        base64_message = "Error encoding"        
     return base64_message
 
 def decode(text):
