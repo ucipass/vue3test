@@ -1,13 +1,12 @@
 <template>
-<!-- <div :id="id" class="p-0"> -->
-<div class="p-0">
+<div :id="id" class="p-0">
 
     <!-- MAIN INPUT -->
-    <div v-if="name && inputs.length" class="w-100">
+    <div v-if="inputs.length" class="w-100">
 
       <!-- HEADER -->
       <div >
-        <slot name="header">
+        <slot name="header" v-bind:header="values">
         </slot>
       </div>
       <!-- BODY WITH DYNAMIC INPUTS   -->
@@ -15,6 +14,7 @@
         <div class="d-flex flex-column justify-content-between">
             <div v-for="input in inputs" :key="input.id" class="m-1 d-flex justify-content-end">
                   <label class="m-1 float-right text-nowrap" :for="input.id">{{input.label}}</label>
+                  <!-- <span class="m-1 float-right"  v-tooltip:left="input.information"> -->
                   <span class="m-1 float-right"  data-bs-toggle="tooltip" data-bs-placement="bottom" :title="input.information">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -26,39 +26,27 @@
         <div class="d-flex flex-column justify-content-between w-100">
             <div v-for="input in inputs" :key="input.id" class="m-1">
                     <select v-if="input.type=='select'" 
-                      class="form-select"
-                      :name="input.id"
-                      :id="name + input.id" 
-                      :value="config.values[input.id]"
-                      @change="inputChange"
-                      aria-label="select-input"
-                    >
+                      class="form-select" 
+                      v-model="values[input.id]" 
+                      aria-label="select-input">
                       <option v-for="item in input.options" :key="item.text" :value="item.value" >{{item.text}}</option>
-                    </select>
-                    <input v-else-if="input.type=='file'" 
-                      class="form-control" 
-                      :name="input.id"
-                      :id="name + input.id"   
-                      :type="input.type"
-                      @change="inputChange"
-                    >                   
+                    </select>                    
                     <input v-else 
-                      class="form-control" 
+                      :class="input.class" 
+                      :type="input.type" 
                       :name="input.id"
-                      :id="name + input.id" 
-                      :value="config.values[input.id]"
+                      :id="config.id + input.id" 
+                      :placeholder="input.placeholder" 
+                      v-model="values[input.id]" 
                       @change="inputChange"
                       @click="inputClick"
-                      :type="input.type" 
-                      :placeholder="input.placeholder" 
                     >
             </div>            
         </div>
       </div>
-
       <!-- FOOTER -->
       <div class="d-flex justify-content-end m-1">
-        <slot name="footer" >
+        <slot name="footer" v-bind:footer="values">
         <!-- FOOTER FALLBACK -->    
         </slot>
       </div>
@@ -74,28 +62,31 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid';
 export default {
   name: 'Input',
   props: {
-    name: String
+    config: Object
   },
   data () {
     return {
+      test: [ {value: true, text: "Enabled"} , {value: false, text: "Disabled"} ],
       values: {},
       buffers: {},
       error_msg: "Form configuration is not available" 
     }
   },
   computed: {
-    config: function (){
-      return this.$store.state[this.name]
+    id: function(){
+        return this.config?.id ? this.config.id : uuidv4();
     },
     // input fields are computed using the config prop
     inputs: function () {
-      let config = this.config
-      if ( config?.input_rows ) { 
-        let inputs =  config.input_rows.filter( item => item.id )
+      if ( this.config?.input_rows && this.config?.id ) { //config.id is needed to set unique element ids for templates
+        let values = this.values
+        let inputs =  this.config.input_rows.filter( item => item.id )
         .map((item)=>{
+          values[item.id] = "value" in item ? item.value : "options" in item ? item.options[0].value : null
           return {
             id:  item.id,
             options: item.options,
@@ -121,31 +112,19 @@ export default {
     },
     inputChange: function ( ev ) {
       if (ev?.target?.files?.length){
+        let buffers = this.buffers
         const file = ev.target.files[0];
         const name = ev.target.name
         const reader = new FileReader();
         reader.onload = (e) => {
-          let payload ={
-            name: this.name,
-            id: name,
-            value: e.target.result        
+          buffers[name] = e.target.result
           }
-          this.$store.commit("setInputValue",payload)
-        }
         reader.readAsText(file);        
-      }else{
-        let payload ={
-          name: this.name,
-          id: ev.target.name,
-          value: ev.target.value          
-        }
-        console.log(payload)
-        this.$store.commit("setInputValue",payload)
       }
     }
   },
   mounted: function () {
-    console.log("Mounted Input:", this.name)
+    console.log("Mounted: Input:", this.config?.id ? this.config.id : "NO-ID-SET")
   }
 }
 </script>

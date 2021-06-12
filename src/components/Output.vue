@@ -11,7 +11,7 @@
             </button>
           </div>
         </div>
-        <textarea class="d-flex flex-grow-1 h-100 form-control terminal text-white bg-dark" id="TextAreaOutput" :value="text" ></textarea>
+        <textarea class="d-flex flex-grow-1 h-100 form-control terminal text-white bg-dark" id="TextAreaOutput" rows="10" :value="$store.state[name].text" ></textarea>
         
       </div>
     </div>
@@ -21,8 +21,11 @@
 export default {
   name: 'Output',
   props: {
-    text: String
-  }
+    name: String
+  },
+  mounted: function () {
+    console.log("Mounted Output:", this.name)
+  }  
 }
 
 

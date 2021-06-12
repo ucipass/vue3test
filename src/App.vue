@@ -1,66 +1,41 @@
 <template>
   <div id="app" class="d-flex flex-column p-0">
-    <!-- HEADER -->
-    <div class="pt-1 pb-1 bg-dark text-white">
-        <div class="d-flex align-items-center justify-content-between">
-          <div class="form-floating ms-1">
-            <input readonly type="text" class="form-control bg-dark text-white" id="floatingStatus" placeholder="Status" :value="status">
-            <label for="floatingStatus">Current Status</label>
-          </div>        
-          <div>
-            <button type="button" class="btn btn-outline-light me-1">Login</button>
-          </div>
-        </div>
-    </div>
-    <!-- MAIN -->
-    <div v-show="authenticated" class="d-flex flex-column flex-grow-1 m-0 overflow-auto">
-      <div class="d-flex border border-2 rounded-3 m-2">
-        <Input ref="input" class="d-flex flex-grow-1 m-2 " :config="config_input">
-          <template v-slot:footer>
-            <button class="btn btn-primary" @click='sendData()'>Send</button>
-          </template>
-        </Input>
-      </div>
-      <Output :text="output" class="d-flex flex-grow-1 m-2"/>
-    </div>    
+    <Header/>
+    <Input :name="input_name" class="border border-2 rounded-3 mt-2 ms-2 me-2 p-2 d-flex overflow-auto">
+      <template v-slot:footer>
+        <button class="btn btn-primary" @click='sendData()'>Send</button>
+      </template>      
+    </Input>
+    <Output :name="'output1'" class="m-2"/>
   </div>
-
-  <Login v-show="!authenticated" />
-  
-
-
+  <Login v-if="false" />
 </template>
 
 <script>
+import Header from './components/Header.vue'
 import Input from './components/Input.vue'
 import Login from './components/Login.vue'
 import Output from './components/Output.vue';
 import { io } from "socket.io-client";
-// import axios from 'axios';
-// import YAML from 'yaml'
+
 
 export default {
   name: 'App',
   components: {
-    Login,Input,Output
+    Login,Input,Output,Header
   },
   data () {
     return {
       socket: {},
-      authenticated: false,
-      connected: false,
-      status: "starting",
+      input_name: "input1",
+      output_name: "output1",
       output: "",
       url: process.env.NODE_ENV === "development" ? "http://localhost:8000": window.location.href ,
-      config_input: {
-        id: "testinput1",
-        input_rows : []
-      }
     }
   },
   methods:{
     sendData: function () {
-      this.socket.emit("data", this.$refs.input.values ,(msg)=>{
+      this.socket.emit("data", this.$store.state.input1.values ,(msg)=>{
         console.log(msg)
       })
 
@@ -81,32 +56,30 @@ export default {
     }
 
     socket.on("connect", () => {
-      this.connected = true
-      this.status = "connected"
+      this.$store.state.status = "connected"
       console.log("Socket.io connected. Id:",socket.id); 
       socket.emit("config","guest",(msg)=>{
-        this.config_input.input_rows = msg
-        this.authenticated = true
-        this.status = "authenticated"
-        console.log("Configuration Received")
+        let input_rows = msg
+        this.$store.commit("setInputRows", { name: this.input_name, input_rows: input_rows} )
+        this.$store.state.status = "authenticated"
       })
     });
 
     socket.io.on("close", tryReconnect);
 
     socket.on('connect_error', () => {
-      this.status = "Connection Error"
+      this.$store.state.status = "Connection Error"
       tryReconnect()
     })        
     socket.on('disconnect', () => {
       console.log("Socket.io disconnect")
-      this.status = "disconnected"
+      this.$store.state.status = "disconnected"
     })        
 
     socket.onAny((event,data) => {
       if ( event == "data" && typeof data == "string" ) {
         console.log(`Incoming data: ${data}`);
-        this.output += data
+        this.$store.commit("setOutputText", {name: this.output_name, text: data}) 
       }else{
         console.log(`Incoming event "${event}" is invalid!`);
       }

@@ -1,0 +1,23 @@
+---
+- id: line
+  value: ''
+  type: text
+  label: Line
+  placeholder: Line to be base64 coded
+  information: Line to be base64 coded
+- id: file
+  value: ''
+  type: file
+  label: File
+  placeholder: Select file to be base64 coded
+  information: File to be base64 coded
+- id: coding
+  value: "encode"
+  type: select
+  label: Base64 Coding
+  information: Select Enabled or Disabled
+  options:
+  - value: "encode"
+    text: Encode
+  - value: "decode"
+    text: Decode

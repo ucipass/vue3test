@@ -15,8 +15,9 @@ import os
 HTML_PATH = os.path.join( os.getcwd(), "dist")
 
 class WebArgs:
-    def __init__(self, port = 8000):
+    def __init__(self, port = 8000, config = {} ):
         self.port = port
+        self.config = config
         self.q_input = Queue()
         self.q_output = Queue()
         self.sio = socketio.AsyncServer(async_mode='tornado',cors_allowed_origins='*')
@@ -61,9 +62,11 @@ class WebArgs:
         @self.sio.event
         async def config(sid,msg):
             logging.debug("Config requested from %s" %(sid) )
-            with open(r'dist/inputs.yaml') as file:
-                json = yaml.load(file, Loader=yaml.FullLoader)
-                return json  
+            # with open(r'dist/inputs.yaml') as file:
+            #     json = yaml.load(file, Loader=yaml.FullLoader)
+            #     return json
+            return self.config
+
         if await self.start_tornado():
             await asyncio.create_task( self.send_outputs_from_queue() )
 
@@ -89,4 +92,3 @@ class WebArgs:
                 await self.sio.emit( "data", json )
             except Empty:
                 await asyncio.sleep(0.1)
-
