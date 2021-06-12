@@ -57,7 +57,7 @@ export default {
 
     socket.on("connect", () => {
       this.$store.state.status = "connected"
-      console.log("Socket.io connected. Id:",socket.id); 
+      // console.log("Socket.io connected. Id:",socket.id); 
       socket.emit("config","guest",(msg)=>{
         let input_rows = msg
         this.$store.commit("setInputRows", { name: this.input_name, input_rows: input_rows} )

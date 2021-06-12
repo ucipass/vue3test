@@ -121,9 +121,15 @@ export default {
     },
     inputChange: function ( ev ) {
       if (ev?.target?.files?.length){
+        let payload ={
+          name: this.name,
+          id: name,
+          value: ""
+        }
         const file = ev.target.files[0];
         const name = ev.target.name
         const reader = new FileReader();
+
         reader.onload = (e) => {
           let payload ={
             name: this.name,
@@ -132,7 +138,20 @@ export default {
           }
           this.$store.commit("setInputValue",payload)
         }
-        reader.readAsText(file);        
+
+        reader.onerror = (e) => {
+          alert(e)
+        }
+
+        if (file.size > 1048576) {
+          this.$store.commit("setInputValue",payload)
+          ev.target.value = ""
+          alert("File is larger than 1MByte!")
+        }
+        else{
+          reader.readAsText(file);    
+        }
+        
       }else{
         let payload ={
           name: this.name,

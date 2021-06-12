@@ -48,12 +48,11 @@ class WebArgs:
         self.sio = socketio.AsyncServer(async_mode='tornado',cors_allowed_origins='*')
         @self.sio.event
         async def connect(sid, environ):
-            print('connect ', sid)
-            # print(environ)
+            logging.warning("Connected with id  %s " %( sid) )
         @self.sio.event
         async def disconnect(sid):
             lastsid = sid
-            print('disconnect ', lastsid)
+            logging.warning("Disconnected with id  %s " %( lastsid) )
         @self.sio.event
         async def data(sid, msg):
             logging.debug("Received Message %s from %s" %(msg, sid) )
