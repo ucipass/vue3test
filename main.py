@@ -1,32 +1,35 @@
 import yaml
-from coding import coding
 from frontend import FrontEnd
 
 PORT = 8000
 YAML_TEXT = """
 ---
-- id: line
-  value: ''
+- id: number1
+  value: '8'
   type: text
-  label: Line
-  placeholder: Line to be base64 coded
-  information: Line to be base64 coded
-- id: file
-  value: ''
-  type: file
-  label: File
-  placeholder: Select file to be base64 coded
-  information: File to be base64 coded
-- id: coding
-  value: encode
+  label: Number 1
+  placeholder: First number 
+  information: First number 
+- id: number2
+  value: '2'
+  type: text
+  label: Number 2
+  placeholder: Second number
+  information: Second number
+- id: operation
+  value: addition 
   type: select
-  label: Base64 Coding
-  information: Select Enabled or Disabled
+  label: Operation
+  information: Select operation tupe for number1 (operation) number1
   options:
-  - value: encode
-    text: Encode
-  - value: decode
-    text: Decode
+  - value: addition
+    text: addition
+  - value: subtraction
+    text: subtraction
+  - value: multiplication
+    text: multiplication
+  - value: division
+    text: division
 """
 
 config = yaml.load(YAML_TEXT, Loader=yaml.FullLoader)
@@ -38,4 +41,22 @@ frontend.run()
 while frontend.is_alive():
     msg = frontend.get()
     if msg:
-      frontend.put( coding(msg) )
+      if not msg["number1"].isnumeric() or not msg["number2"].isnumeric():
+        frontend.put( "Invalid inputs '%s' and '%s' \n" %(msg["number1"],msg["number2"]) )
+        continue
+      val1 = float(msg["number1"])
+      val2 = float(msg["number2"])
+      if   msg["operation"] == "addition":
+        frontend.put( str(val1 + val2) + "\n" )
+      elif msg["operation"] == "subtraction":
+        frontend.put( str(val1 - val2) + "\n" )
+      elif msg["operation"] == "multiplication":
+        frontend.put( str(val1 * val2) + "\n" )
+      elif msg["operation"] == "division":
+        frontend.put( str(val1 / val2) + "\n" )
+        
+
+
+
+
+

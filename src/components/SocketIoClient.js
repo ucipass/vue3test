@@ -1,0 +1,119 @@
+import { io } from "socket.io-client";
+import  store from "../store.js"
+
+const log = console
+class SocketIoClient  {
+    constructor(url,username,password) {
+        if(typeof username === 'object' && username !== null){
+            this.username = username.name 
+            this.password = username.token
+            this.url = username.url
+        }else{
+            this.username = username ? username : "anonymous"
+            this.password = password ? password : "anonymous"
+            this.url = url          
+        }
+
+        try {
+            this.url = url
+        } catch (error) {
+            console.log("INVALID URL:", this.url)
+        }   
+
+        this.sio_url = this.url.origin
+        this.sio_path = new URL("socket.io", this.url )
+        this.sio_opts = { 
+            reconnection: true, 
+            path: this.sio_path 
+        }
+
+        this.connectionRetryMs = 10000  // if connection fails retry
+        this.socket = null
+        this.reconnectAttempt = 0
+        this.stopped = false
+        this.socketId = null
+        this.auth = false
+        this.log = log
+        this.proxy = null
+    }
+
+
+    async start(){
+      this.socket = io(this.url, { reconnection: false });
+      let socket = this.socket
+
+      const tryReconnect = () => {
+        store.commit('setStatus', `Reconnecting...`)
+        setTimeout(() => {
+          socket.io.open((err) => {
+            if (err) {
+              tryReconnect();
+            }
+          });
+        }, 2000);
+      }
+
+      socket.on("connect", () => {
+        this.socketId = socket.id
+        console.log("Socket.io connected with id:", socket.id);
+        store.commit('setStatus', "connected")
+        return true;
+      });
+
+      socket.on('disconnect', (reason) => {
+          console.log("Socket.io disconnect with id:", this.socketId, "reason:", reason)
+          store.commit('setStatus', `Disconnected`)
+      }) 
+
+      socket.on("connect_error", (error) => {
+        if (! this.socketId){
+          store.commit('setStatus', `Connection error: ${error}`)
+        }
+      });
+
+      socket.io.on("close", tryReconnect);
+
+      socket.onAny((event,data) => {
+        // console.log(`Incoming data: ${data}`);
+        if ( event == "data" && typeof data == "string" ) {
+          let text = store.state.output.text + data //append
+          let payload = { name: "output", value: { text: text } }
+          store.commit("setState", payload )
+        }
+        else if ( event == "data" && typeof data == "object" && data.name) {
+          store.commit("setState", data)
+        }
+        else{
+          console.log(`Incoming event "${event}" is invalid!`);
+        }   
+      })     
+    }
+
+    getConfig(){
+      return new Promise((resolve, reject) => {
+        try {
+          this.socket.emit("config","guest",(msg)=>{
+            resolve(msg)
+          })
+        } catch (error) {
+          reject(error)
+        }          
+      });
+    }
+
+    sendData(data){
+      return new Promise((resolve, reject) => {
+        try {
+          this.socket.emit("data", data ,(msg)=>{
+            resolve(msg)
+          })
+        } catch (error) {
+          reject(error)
+        }          
+      });
+    }
+
+
+}
+
+export default SocketIoClient

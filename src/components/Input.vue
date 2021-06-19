@@ -158,7 +158,7 @@ export default {
           id: ev.target.name,
           value: ev.target.value          
         }
-        console.log(payload)
+        // console.log(payload)
         this.$store.commit("setInputValue",payload)
       }
     }

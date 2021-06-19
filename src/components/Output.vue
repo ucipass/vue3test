@@ -51,7 +51,7 @@
           class="mt-1 d-flex flex-grow-1 h-100 form-control terminal text-white bg-dark"
           id="TextAreaOutput"
           rows="10"
-          :value="$store.state[name].text" 
+          :value="output" 
           @change="outputChange"
         >
         </textarea>
@@ -71,11 +71,16 @@ export default {
       search: ""
     }
   },
+  computed:{
+    output: function (){
+      return this.$store.state[this.name]?.text ? this.$store.state[this.name]?.text : ""
+    }
+  },
   methods: {
     deleteOutput: function(){
       let payload = { name: this.name, text: ""}
-      console.log("DELETE",payload)
       this.$store.commit("setOutputText",payload)
+      console.log("DELETED",this.name)
     },
     outputChange: function(ev){
       let payload ={

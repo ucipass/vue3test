@@ -4,14 +4,26 @@ const store = createStore({
     state () {
       return {
         status: "starting",
-        input1: {
+        socket: null,
+        input: {
         },
-        output1: {
+        output: {
           text: ""
         }
       }
     },
     mutations: {
+      setStatus (state,payload) {
+        state.status = payload
+      },
+      setState (state,payload) {
+        if ( payload?.name in state ) {
+          state[payload.name] = payload.value ? payload.value : null
+        }
+        else{
+          return console.log (`No name: ${payload.name} found!`)
+        }
+      },
       setInputValue (state,payload) {
         if ( ! state[payload.name] ) { 
           return console.log (`No input name ${payload.name} found!`)
