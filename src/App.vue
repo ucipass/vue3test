@@ -1,11 +1,11 @@
 <template>
   <div id="app" class="d-flex flex-column p-0">
     <Header/>
-    <Input :name="input_name" class="border border-2 rounded-3 mt-2 ms-2 me-2 p-2 d-flex overflow-auto">
+    <InputForm :name="input_name" class="border border-2 rounded-3 mt-2 ms-2 me-2 p-2 d-flex overflow-auto">
       <template v-slot:footer>
         <button class="btn btn-primary" @click='sendData()'>Send</button>
       </template>      
-    </Input>
+    </InputForm>
     <Output :name="output_name" class="m-2"/>
   </div>
   <Login v-if="false" />
@@ -13,8 +13,7 @@
 
 <script>
 import Header from './components/Header.vue'
-import Input from './components/Input.vue'
-import Login from './components/Login.vue'
+import InputForm from './components/InputForm.vue'
 import Output from './components/Output.vue';
 import SocketIoClient  from './components/SocketIoClient.js';
 
@@ -22,7 +21,7 @@ import SocketIoClient  from './components/SocketIoClient.js';
 export default {
   name: 'App',
   components: {
-    Login,Input,Output,Header
+    InputForm,Output,Header
   },
   data () {
     return {

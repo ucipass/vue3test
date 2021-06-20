@@ -75,7 +75,7 @@
 
 <script>
 export default {
-  name: 'Input',
+  name: 'InputForm',
   props: {
     name: String
   },

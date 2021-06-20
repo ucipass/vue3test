@@ -1,7 +1,11 @@
 import yaml
+import argparse
 from frontend import FrontEnd
 
-PORT = 8000
+parser = argparse.ArgumentParser()
+parser.add_argument('-p', '--port', help='Specify the tcp port for the web server. Default is 8000', nargs='?', default="8000")
+args = parser.parse_args()
+
 YAML_TEXT = """
 ---
 - id: number1
@@ -34,8 +38,8 @@ YAML_TEXT = """
 
 config = yaml.load(YAML_TEXT, Loader=yaml.FullLoader)
 
-# frontend = FrontEnd(port = PORT, config = config, certfile="certfile.pem", keyfile="keyfile.pem")
-frontend = FrontEnd(port = PORT, config = config)
+# frontend = FrontEnd(port = args.port, config = config, certfile="certfile.pem", keyfile="keyfile.pem") # if https is needed cert files are auto generated if missing
+frontend = FrontEnd(port = args.port, config = config)
 frontend.run()
 
 while frontend.is_alive():

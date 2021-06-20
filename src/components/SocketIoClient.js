@@ -89,6 +89,18 @@ class SocketIoClient  {
       })     
     }
 
+
+    async stop(){
+      let socket = this.socket
+      while ( socket && socket.connected){
+        socket.disconnect(true)
+        await new Promise((resolve) => {
+            setTimeout(resolve, 100);
+        });
+      }
+      return (true)       
+    }
+
     getConfig(){
       return new Promise((resolve, reject) => {
         try {

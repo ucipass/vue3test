@@ -3,9 +3,24 @@ import { createStore } from 'vuex'
 const store = createStore({
     state () {
       return {
+        url: "http://localhost;8000",
+        username: "guest",
+        password: "guest",
         status: "starting",
         socket: null,
         input: {
+        },
+        inputLogin:{
+          input_rows: [
+            { id: "url", label: "Server URL", placeholder: "http(s)://<server>:<port>", information: "URL for socket.io server that this client is communicating with." },
+            { id: "username", label: "Username" },
+            { id: "password", label: "Password", type: "password"}
+          ],
+          values:{
+            url: process.env.NODE_ENV === "development" ? "http://localhost:8000": window.location.href,
+            username: "guest",
+            password: "guest"
+          }
         },
         output: {
           text: ""
