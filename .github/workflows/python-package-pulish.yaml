@@ -9,11 +9,12 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.7
-    - name: Install pypa/build
+    - name: Install pypa/build and twine
       run: >-
         python -m
         pip install
         build
+        twine
         --user
     - name: Copy files
       working-directory: ./python-ioform
@@ -27,14 +28,14 @@ jobs:
         --wheel
         --outdir dist/     
     - name: Publish a Python distribution to PyPI
-      working-directory: ./python-ioform
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
-      # with:
-      #   password: ${{ secrets.PYPI_API_TOKEN }}
-        
+      working-directory: ./python-ioform/buildtree
+      run: >-
+        python -m
+        twine
+        upload 
+        dist/*
+
+
     # steps:
     #   - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
     #   - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
