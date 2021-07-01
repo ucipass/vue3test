@@ -2,6 +2,6 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map',
     },  
-  outputDir: "python-ioform/dist", // Build directory 
+  outputDir: "backend-python/dist", // Build directory 
   publicPath: '' 
 } 
