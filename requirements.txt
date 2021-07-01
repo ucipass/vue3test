@@ -1,5 +1,0 @@
-tornado
-python-socketio
-pyyaml
-build
-cryptography>=3.3.1,<4.0.0
