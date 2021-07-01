@@ -6,7 +6,8 @@
       "type": "python",
       "request": "launch",
       "program": "main.py",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/backend-python"
     },
     {
       "type": "pwa-chrome",

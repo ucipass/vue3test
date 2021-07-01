@@ -34,6 +34,15 @@ YAML_TEXT = """
     text: multiplication
   - value: division
     text: division
+- id: textbox
+  value: '123'
+  type: textarea
+  label: TextBox
+  placeholder: Enter multiline text here...
+  information: This field allows multiline text to be sent
+- id: textfile
+  type: file
+  label: Text File
 """
 
 config = yaml.load(YAML_TEXT, Loader=yaml.FullLoader)
@@ -45,19 +54,26 @@ frontend.run()
 while frontend.is_alive():
     msg = frontend.get()
     if msg:
+      message = ""
       if not msg["number1"].isnumeric() or not msg["number2"].isnumeric():
-        frontend.put( "Invalid inputs '%s' and '%s' \n" %(msg["number1"],msg["number2"]) )
+        message +=  "Invalid inputs '%s' and '%s' \n" %(msg["number1"],msg["number2"]) 
         continue
       val1 = float(msg["number1"])
       val2 = float(msg["number2"])
       if   msg["operation"] == "addition":
-        frontend.put( str(val1 + val2) + "\n" )
+        message +=  "Result: " + str(val1 + val2) + "\n\n" 
       elif msg["operation"] == "subtraction":
-        frontend.put( str(val1 - val2) + "\n" )
+        message +=  "Result: " + str(val1 - val2) + "\n\n" 
       elif msg["operation"] == "multiplication":
-        frontend.put( str(val1 * val2) + "\n" )
+        message +=  "Result: " + str(val1 * val2) + "\n\n" 
       elif msg["operation"] == "division":
-        frontend.put( str(val1 / val2) + "\n" )
+        message +=  "Result: " + str(val1 / val2) + "\n\n" 
+      
+      message += "TextBox content:\n" + msg["textbox"] + "\n\n"
+      message += "File content:\n" + ( msg["textfile"] if 'textfile' in msg else "" ) + "\n\n"
+      # message += "File content:\n" +  msg["textfile"] 
+      # message += msg["textfile"] if ('textfile' in msg) else ""
+      frontend.put( message + "\n" )
         
 
 

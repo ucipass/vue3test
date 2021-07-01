@@ -41,6 +41,8 @@ class SocketIoClient  {
     async start(){
       this.socket = io(this.url, { reconnection: false });
       let socket = this.socket
+      let resolve,reject
+      let p = new Promise((res, rej) => { resolve = res, reject = rej });
 
       const tryReconnect = () => {
         store.commit('setStatus', `Reconnecting...`)
@@ -57,7 +59,7 @@ class SocketIoClient  {
         this.socketId = socket.id
         console.log("Socket.io connected with id:", socket.id);
         store.commit('setStatus', "connected")
-        return true;
+        resolve(true);
       });
 
       socket.on('disconnect', (reason) => {
@@ -68,6 +70,7 @@ class SocketIoClient  {
       socket.on("connect_error", (error) => {
         if (! this.socketId){
           store.commit('setStatus', `Connection error: ${error}`)
+          reject(error)
         }
       });
 
@@ -86,7 +89,9 @@ class SocketIoClient  {
         else{
           console.log(`Incoming event "${event}" is invalid!`);
         }   
-      })     
+      })
+      
+      return p
     }
 
 

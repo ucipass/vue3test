@@ -14,7 +14,8 @@
       <div class="d-flex flex-grow-1" >
         <div class="d-flex flex-column justify-content-between">
             <div v-for="input in inputs" :key="input.id" class="m-1 d-flex justify-content-end">
-                  <label class="m-1 float-right text-nowrap" :for="input.id">{{input.label}}</label>
+                  <label v-if="input.type=='textarea'" class="m-1 float-right text-nowrap"  :style="input.style" :for="input.id">{{input.label}} </label>
+                  <label v-else class="m-1 float-right text-nowrap" :for="input.id">{{input.label}} </label>
                   <span class="m-1 float-right"  data-bs-toggle="tooltip" data-bs-placement="bottom" :title="input.information">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -41,7 +42,17 @@
                       :id="name + input.id"   
                       :type="input.type"
                       @change="inputChange"
-                    >                   
+                    > 
+                    <textarea v-else-if="input.type=='textarea'" 
+                      class="form-control" 
+                      :style="input.style"
+                      :name="input.id"
+                      :id="name + input.id" 
+                      :value="config.values[input.id]"
+                      @change="inputChange"
+                      :placeholder="input.placeholder"
+                    >
+                    </textarea>                                      
                     <input v-else 
                       class="form-control" 
                       :name="input.id"
@@ -103,7 +114,8 @@ export default {
             type: (item.type ? item.type : "text"),
             placeholder: item.placeholder ? item.placeholder : "",
             information: item.information ? item.information : "",
-            class: item.type == "checkbox" ? "form-check-input checkbox-inline" : "form-control"
+            class: item.type == "checkbox" ? "form-check-input checkbox-inline" : "form-control",
+            style: item.type == "textarea" ? "resize: none;height: 100px" : null
           }
         })
         return inputs

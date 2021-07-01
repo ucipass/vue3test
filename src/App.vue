@@ -27,7 +27,19 @@ export default {
     return {
       input_name: "input",
       output_name: "output",
-      url: process.env.NODE_ENV === "development" ? "http://localhost:8000": window.location.href ,
+      url: process.env.NODE_ENV === "development" ? "http://localhost:8000": window.location.href,
+      test_input_rows:  [
+        {"id": "id1"},
+        {"id": "id2"},
+        {"id": "id3"},
+        {"id": "id4"},
+        {"id": "id5"},
+        {"id": "id6"},
+        {"id": "id7"},
+        {"id": "id8"},
+        {"id": "text1", "type": "textarea"},
+        {"id": "id2"}
+      ]       
     }
   },
   methods:{
@@ -48,6 +60,7 @@ export default {
     })
     .catch((error) => {
       console.log(error)
+      store.commit("setInputRows", { name: "input", input_rows: this.test_input_rows })
     })
   }
 }
