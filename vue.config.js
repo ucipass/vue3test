@@ -2,6 +2,6 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map',
     },  
-  outputDir: "dist", // Build directory 
+  outputDir: "python/dist", // Build directory 
   publicPath: '' 
 } 

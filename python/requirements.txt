@@ -2,4 +2,5 @@ tornado
 python-socketio
 pyyaml
 build
+twine
 cryptography>=3.3.1,<4.0.0
