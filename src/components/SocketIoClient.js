@@ -95,6 +95,7 @@ class SocketIoClient  {
     }
 
 
+    
     async stop(){
       let socket = this.socket
       while ( socket && socket.connected){
@@ -105,6 +106,7 @@ class SocketIoClient  {
       }
       return (true)       
     }
+
 
     getConfig(){
       return new Promise((resolve, reject) => {
@@ -117,6 +119,7 @@ class SocketIoClient  {
         }          
       });
     }
+
 
     sendData(data){
       return new Promise((resolve, reject) => {

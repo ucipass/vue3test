@@ -3,7 +3,7 @@
     <Header/>
     <InputForm :name="input_name" class="border border-2 rounded-3 mt-2 ms-2 me-2 p-2 d-flex overflow-auto">
       <template v-slot:footer>
-        <button class="btn btn-primary" @click='sendData()'>Send</button>
+        <button class="btn btn-primary" @click='submit()'>Submit</button>
       </template>      
     </InputForm>
     <Output :name="output_name" class="m-2"/>
@@ -29,23 +29,17 @@ export default {
       output_name: "output",
       url: process.env.NODE_ENV === "development" ? "http://localhost:8000": window.location.href,
       test_input_rows:  [
-        {"id": "id1"},
-        {"id": "id2"},
-        {"id": "id3"},
-        {"id": "id4"},
-        {"id": "id5"},
-        {"id": "id6"},
-        {"id": "id7"},
-        {"id": "id8"},
-        {"id": "text1", "type": "textarea"},
-        {"id": "id2"}
+        {"id": "user"},
+        {"id": "pass", "type":"password"},
+        {"id": "textbox1", "type": "textarea"},
+        {"id": "file1", "type": "file"}
       ]       
     }
   },
   methods:{
-    sendData: function () {
-      let socket = this.$store.state.socket
+    submit: function () {
       let input_values = this.$store.state[this.input_name].values
+      let socket = this.$store.state.socket
       socket.sendData(input_values) // socket.io will populate output automatically in store.js
     }
   },
