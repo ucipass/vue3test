@@ -103,7 +103,7 @@ export default {
     },
     // input fields are computed using the config prop
     inputs: function () {
-      let config = this.config ? this.config : []
+      let config = this.config ? this.config : { input_rows: []}
       if ( config?.input_rows ) { 
         let inputs =  config.input_rows.filter( item => item.id )
         .map((item)=>{
