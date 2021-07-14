@@ -50,6 +50,10 @@ class IOForm:
     def put(self,msg):
         self.q_output.put(msg)
     
+    def input_rows(self,config):
+        msg = { "name":"input", "value":  { "input_rows": config } }
+        self.q_output.put(msg)
+
     def start_thread2(self):
         asyncio.run( self.start_thread() )
 

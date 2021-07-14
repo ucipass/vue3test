@@ -77,14 +77,17 @@ class SocketIoClient  {
       socket.io.on("close", tryReconnect);
 
       socket.onAny((event,data) => {
-        // console.log(`Incoming data: ${data}`);
         if ( event == "data" && typeof data == "string" ) {
           let text = store.state.output.text + data //append
           let payload = { name: "output", value: { text: text } }
           store.commit("setState", payload )
         }
-        else if ( event == "data" && typeof data == "object" && data.name) {
-          store.commit("setState", data)
+        else if ( event == "data" && typeof data == "object" && data.name == "input") {
+          console.log(data)
+          let input = data.value
+          if ( ! input.values ) input.values = {}
+          let payload = { name: "input", value: input }
+          store.commit("setState", payload)
         }
         else{
           console.log(`Incoming event "${event}" is invalid!`);
