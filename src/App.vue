@@ -54,7 +54,7 @@ export default {
     })
     .catch((error) => {
       console.log(error)
-      store.commit("setInputRows", { name: "input", input_rows: this.test_input_rows })
+      store.commit("setInputRows", { name: "input", input_rows: [] })
     })
   }
 }

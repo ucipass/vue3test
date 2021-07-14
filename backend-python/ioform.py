@@ -21,7 +21,7 @@ from cryptography.hazmat.primitives import hashes
 HTML_PATH = os.path.join( os.path.dirname(__file__) , "dist")
 
 class IOForm:
-    def __init__(self, port = 8000, config = {}, certfile = None, keyfile = None ):
+    def __init__(self, port = 8000, config = [], certfile = None, keyfile = None ):
         self.port = port
         self.certfile = certfile
         self.keyfile = keyfile
