@@ -1,14 +1,28 @@
 <template>
   <div id="app" class="d-flex flex-column p-0">
     <Header/>
-    <InputForm :name="input_name" class="border border-2 rounded-3 mt-2 ms-2 me-2 p-2 d-flex overflow-auto">
+    <InputForm v-if="$store.state.input.name" :name="$store.state.input.name" class="border border-2 rounded-3 mt-2 ms-2 me-2 p-2 d-flex overflow-auto">
       <template v-slot:footer>
         <button class="btn btn-primary" @click='submit()'>Submit</button>
       </template>      
     </InputForm>
-    <Output :name="output_name" class="m-2"/>
+    <Output v-if="$store.state.output.name" :name="$store.state.output.name" class="m-2"/>
   </div>
-  <Login v-if="false" />
+
+  
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Submit complete:</strong>
+      <small>{{toastDate}}</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      {{toastMessage}}
+    </div>
+  </div>
+</div>
 </template>
 
 <script>
@@ -16,6 +30,7 @@ import Header from './components/Header.vue'
 import InputForm from './components/InputForm.vue'
 import Output from './components/Output.vue';
 import SocketIoClient  from './components/SocketIoClient.js';
+import { Toast } from "bootstrap" ;
 
 
 export default {
@@ -28,6 +43,8 @@ export default {
       input_name: "input",
       output_name: "output",
       url: process.env.NODE_ENV === "development" ? "http://localhost:8000": window.location.href,
+      toastMessage: "",
+      toastDate: "",
       test_input_rows:  [
         {"id": "user"},
         {"id": "pass", "type":"password"},
@@ -38,9 +55,22 @@ export default {
   },
   methods:{
     submit: function () {
+      this.toastDate = (new Date()).toLocaleTimeString('en-US')
+      var myAlert =document.getElementById('liveToast');//select id of toast
+      var bsAlert = new Toast(myAlert);//inizialize it      
       let input_values = this.$store.state[this.input_name].values
       let socket = this.$store.state.socket
       socket.sendData(input_values) // socket.io will populate output automatically in store.js
+      .then(msg => {
+        this.toastMessage = msg
+        bsAlert.show();//show it      
+      })
+      .catch(()=>{
+        this.toastMessage = "Failed"
+        bsAlert.show();//show it      
+      })
+
+
     }
   },
   mounted(){
@@ -49,12 +79,16 @@ export default {
     store.commit("setState", {name: "socket", value : socket })  //store socket.io in store.js
     socket.start()
     .then( () =>  socket.getConfig() )
-    .then ( (input_rows) => {
-      store.commit("setInputRows", { name: this.input_name, input_rows: input_rows} ) 
+    .then ( (config) => {
+      if (config.input){
+        store.commit("setInput", config.input ) 
+      }
+      if (config.output){
+        store.commit("setOutput", config.output ) 
+      }     
     })
     .catch((error) => {
       console.log(error)
-      store.commit("setInputRows", { name: "input", input_rows: [] })
     })
   }
 }

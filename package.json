@@ -21,6 +21,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.0.17",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

@@ -45,10 +45,10 @@ YAML_TEXT = """
   label: Text File
 """
 
-config = yaml.load(YAML_TEXT, Loader=yaml.FullLoader)
+input_rows = yaml.load(YAML_TEXT, Loader=yaml.FullLoader)
 
 # frontend = FrontEnd(port = args.port, config = config, certfile="certfile.pem", keyfile="keyfile.pem") # if https is needed cert files are auto generated if missing
-frontend = FrontEnd(port = args.port, config = config)
+frontend = FrontEnd(port = args.port, input = { "name": "input", "input_rows": input_rows}, output = { "name": "output"})
 frontend.run()
 
 while frontend.is_alive():

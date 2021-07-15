@@ -21,12 +21,13 @@ from cryptography.hazmat.primitives import hashes
 HTML_PATH = os.path.join( os.path.dirname(__file__) , "dist")
 
 class IOForm:
-    def __init__(self, port = 8000, config = [], certfile = None, keyfile = None ):
+    def __init__(self, port = 8000, input = {}, output = {} , certfile = None, keyfile = None ):
         self.port = port
         self.certfile = certfile
         self.keyfile = keyfile
         self.isSecure = certfile and keyfile
-        self.config = config
+        self.input = input
+        self.output = output
         self.q_input = Queue()
         self.q_output = Queue()
         self.sio = socketio.AsyncServer(async_mode='tornado',cors_allowed_origins='*')
@@ -51,7 +52,18 @@ class IOForm:
         self.q_output.put(msg)
     
     def input_rows(self,config):
-        msg = { "name":"input", "value":  { "input_rows": config } }
+        self.input = { "name":"input", "input_rows": config }
+        msg = { "input": self.input}
+        self.q_output.put(msg)
+
+    def input_config(self,config):
+        self.input = config
+        msg = { "input": self.input }
+        self.q_output.put(msg)
+
+    def output_config(self,config):
+        self.output = config
+        msg = { "output": self.output }
         self.q_output.put(msg)
 
     def start_thread2(self):
@@ -77,7 +89,7 @@ class IOForm:
             # with open(r'dist/inputs.yaml') as file:
             #     json = yaml.load(file, Loader=yaml.FullLoader)
             #     return json
-            return self.config
+            return { "input": self.input, "output": self.output}
 
         if await self.start_tornado():
             await asyncio.create_task( self.send_outputs_from_queue() )

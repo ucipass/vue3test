@@ -9,6 +9,13 @@ const store = createStore({
         status: "starting",
         socket: null,
         input: {
+          name: null,
+          input_rows: [],
+          values: {}
+        },
+        output: {
+          name: null,
+          text: ""
         },
         inputLogin:{
           input_rows: [
@@ -21,9 +28,6 @@ const store = createStore({
             username: "guest",
             password: "guest"
           }
-        },
-        output: {
-          text: ""
         }
       }
     },
@@ -38,6 +42,36 @@ const store = createStore({
         else{
           return console.log (`No name: ${payload.name} found!`)
         }
+      },
+      setInput (state,input) {
+        if (input.name) {
+          state.input.name = input.name
+          state.input.input_rows = input.input_rows ? input.input_rows : []
+          state.input.values = {}
+          for (const row of input.input_rows ) {
+            state.input.values[row.id] = null
+          }
+        }
+        else{
+          state.input = {
+            name: null,
+            input_rows: [],
+            values: {}
+          }
+        }      
+      },
+      setOutput (state,output) {
+        if (output.name){
+          state.output.name = output.name ? output.name : "output"
+          state.output.text = output.text ? output.text : ""          
+        }
+        else{
+          state.output = {
+            name: null,
+            text: ""
+          }
+        }
+
       },
       setInputValue (state,payload) {
         if ( ! state[payload.name] ) { 

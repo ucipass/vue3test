@@ -82,12 +82,14 @@ class SocketIoClient  {
           let payload = { name: "output", value: { text: text } }
           store.commit("setState", payload )
         }
-        else if ( event == "data" && typeof data == "object" && data.name == "input") {
+        else if ( event == "data" && typeof data == "object" ) {
           console.log(data)
-          let input = data.value
-          if ( ! input.values ) input.values = {}
-          let payload = { name: "input", value: input }
-          store.commit("setState", payload)
+          if ( data.input ) {
+            store.commit("setInput", data.input)
+          }
+          if ( data.output ) {
+            store.commit("setOutput", data.output)
+          }
         }
         else{
           console.log(`Incoming event "${event}" is invalid!`);
