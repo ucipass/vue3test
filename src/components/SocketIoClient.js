@@ -79,8 +79,8 @@ class SocketIoClient  {
       socket.onAny((event,data) => {
         if ( event == "data" && typeof data == "string" ) {
           let text = store.state.output.text + data //append
-          let payload = { name: "output", value: { text: text } }
-          store.commit("setState", payload )
+          let payload = { name: "output", text: text  }
+          store.commit("setOutput", payload)
         }
         else if ( event == "data" && typeof data == "object" ) {
           console.log(data)

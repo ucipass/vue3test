@@ -32,8 +32,6 @@ class IOForm:
         self.q_output = Queue()
         self.sio = socketio.AsyncServer(async_mode='tornado',cors_allowed_origins='*')
         self.thread = None
-
-    def run(self):
         self.thread = t1 = Thread(target=self.start_thread2 , name="TornadoThread")
         self.thread.daemon = True
         self.thread.start()
@@ -43,7 +41,7 @@ class IOForm:
     
     def get(self):
         if self.q_input.empty():
-            time.sleep(0.1) #This is to cut down on idle cycling
+            time.sleep(0.1) #This is to cut down on CPU idle cycling load
             return None
         else:
             return self.q_input.get()
@@ -56,12 +54,12 @@ class IOForm:
         msg = { "input": self.input}
         self.q_output.put(msg)
 
-    def input_config(self,config):
+    def config_input(self,config):
         self.input = config
         msg = { "input": self.input }
         self.q_output.put(msg)
 
-    def output_config(self,config):
+    def config_output(self,config):
         self.output = config
         msg = { "output": self.output }
         self.q_output.put(msg)

@@ -34,45 +34,31 @@ YAML_TEXT = """
     text: multiplication
   - value: division
     text: division
-- id: textbox
-  value: '123'
-  type: textarea
-  label: TextBox
-  placeholder: Enter multiline text here...
-  information: This field allows multiline text to be sent
-- id: textfile
-  type: file
-  label: Text File
 """
 
 input_rows = yaml.load(YAML_TEXT, Loader=yaml.FullLoader)
 
 # frontend = FrontEnd(port = args.port, config = config, certfile="certfile.pem", keyfile="keyfile.pem") # if https is needed cert files are auto generated if missing
 frontend = FrontEnd(port = args.port, input = { "name": "input", "input_rows": input_rows}, output = { "name": "output"})
-frontend.run()
 
 while frontend.is_alive():
     msg = frontend.get()
     if msg:
       message = ""
       if not msg["number1"].isnumeric() or not msg["number2"].isnumeric():
-        message +=  "Invalid inputs '%s' and '%s' \n" %(msg["number1"],msg["number2"]) 
-        continue
-      val1 = float(msg["number1"])
-      val2 = float(msg["number2"])
-      if   msg["operation"] == "addition":
-        message +=  "Result: " + str(val1 + val2) + "\n\n" 
-      elif msg["operation"] == "subtraction":
-        message +=  "Result: " + str(val1 - val2) + "\n\n" 
-      elif msg["operation"] == "multiplication":
-        message +=  "Result: " + str(val1 * val2) + "\n\n" 
-      elif msg["operation"] == "division":
-        message +=  "Result: " + str(val1 / val2) + "\n\n" 
-      
-      message += "TextBox content:\n" + msg["textbox"] + "\n\n"
-      message += "File content:\n" + ( msg["textfile"] if 'textfile' in msg else "" ) + "\n\n"
-      # message += "File content:\n" +  msg["textfile"] 
-      # message += msg["textfile"] if ('textfile' in msg) else ""
+        message +=  "Invalid inputs '%s' and '%s' " %(msg["number1"],msg["number2"]) 
+      else:
+        val1 = float(msg["number1"])
+        val2 = float(msg["number2"])
+        if   msg["operation"] == "addition":
+          message +=  "Result: " + str(val1 + val2) 
+        elif msg["operation"] == "subtraction":
+          message +=  "Result: " + str(val1 - val2) 
+        elif msg["operation"] == "multiplication":
+          message +=  "Result: " + str(val1 * val2) 
+        elif msg["operation"] == "division":
+          message +=  "Result: " + str(val1 / val2)
+
       frontend.put( message + "\n" )
         
 

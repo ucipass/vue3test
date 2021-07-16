@@ -10,6 +10,14 @@
       "cwd": "${workspaceFolder}/backend-python"
     },
     {
+      "name": "Python: test.py",
+      "type": "python",
+      "request": "launch",
+      "program": "test.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/backend-python"
+    },
+    {
       "type": "pwa-chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",

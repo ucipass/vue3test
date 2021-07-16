@@ -49,7 +49,7 @@ const store = createStore({
           state.input.input_rows = input.input_rows ? input.input_rows : []
           state.input.values = {}
           for (const row of input.input_rows ) {
-            state.input.values[row.id] = null
+            state.input.values[row.id] = row.value ? row.value : ""
           }
         }
         else{
