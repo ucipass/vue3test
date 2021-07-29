@@ -1,5 +1,10 @@
 # Python example
 
+## Installation
+```
+pip install ioform
+```
+
 ## Initialize the webserver and configure a simple input form with a single input row "example"
 ```
 from ioform import IOForm
