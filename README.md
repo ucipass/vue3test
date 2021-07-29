@@ -1,31 +1,35 @@
-# Python example
-
+# Web frontend with input/output form controlled from python
+The idea behind this library is to provide a web frontend for python programs in order to manage user inputs and provide feedback on the web gui.
+The input and output fields can be dynamically populated by just using python calls.
 ## Installation
 ```
 pip install ioform
 ```
+## Example
+![grab-landing-page](https://github.com/winnie1312/grab/blob/master/grab-landingpage-winnie.gif)
 
-## Initialize the webserver and configure a simple input form with a single input row "example"
+## Description
+### Initialize the webserver and configure a simple input form with a single input row "example"
 ```
 from ioform import IOForm
 frontend = IOForm()
 input_rows = [ { "id": "example", "value": "Bada-bing-bada-boom"}  ]
 frontend.input_rows ( input_rows )
 ```
-## It is possible to dynamically modify the web frontend input fields
+### It is possible to dynamically modify the web frontend input fields
 ```
 input_rows.append( { "id": "key",     "value": "AAAABBBBCCC", "type": "text", "label": "AWS Key", "information": "Add your AWS key here..."} )
 frontend.input_rows ( input_rows )
 input_rows.append( { "id": "secret",  "value": "MySecretKey", "type": "password", "label": "AWS Secret", "information": "Add your AWS secret here..."} )
 frontend.input_rows ( input_rows )
 ```
-## Submit 3 different input forms on the web page with different inputs, The messages are queued up and can be retrieved by python
+### Submit 3 different input forms on the web page with different inputs, The messages are queued up and can be retrieved by python
 ```
 frontend.get()
 frontend.get()
 frontend.get()
 ```
-## It is possible to dynamically provide output values in a textarea
+### It is possible to dynamically provide output values in a textarea
 ```
 frontend.put("random message 1 \n")
 frontend.put("random message 2 \n")
