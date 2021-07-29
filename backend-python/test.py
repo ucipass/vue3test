@@ -8,15 +8,15 @@ input_rows.append( { "id": "id1"} )
 input_rows.append( { "id": "id2",  "value": "guest", "label": "Identity2", "placeholder": "Enter id2 here...", "information": "Put some infor here"} )
 input_rows.append( { "id": "password",  "label": "Password", "type": "password"} )
 select = { 
-  "id": "choice",  
-  "label": "My Choice", 
+  "id": "region",  
+  "label": "AWS Region", 
   "type": "select", 
-  "value": "choice1", 
+  "value": "us-east-1", 
   "options": [ 
-      { "text": "Choice1", "value": "choice1"},
-      { "text": "Choice2", "value": "choice2"},
-      { "text": "Choice3", "value": "choice3"},
-      { "text": "Choice4", "value": "choice4"},
+      { "value": "us-east-1", "text": "US East 1(Ohio)"},
+      { "value": "us-east-2", "text": "US East 2(N. Virginia)"},
+      { "value": "us-west-1", "text": "US West 1(N. California)"},
+      { "value": "us-west-2", "text": "US West 2(Oregon)"},
     ] 
   }
 input_rows.append( select )

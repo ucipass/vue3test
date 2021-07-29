@@ -22,6 +22,20 @@ input_rows.append( { "id": "key",     "value": "AAAABBBBCCC", "type": "text", "l
 frontend.input_rows ( input_rows )
 input_rows.append( { "id": "secret",  "value": "MySecretKey", "type": "password", "label": "AWS Secret", "information": "Add your AWS secret here..."} )
 frontend.input_rows ( input_rows )
+input_rows.append( { 
+  "id": "region",  
+  "label": "AWS Region", 
+  "type": "select", 
+  "value": "us-east-1", 
+  "options": [ 
+      { "value": "us-east-1", "text": "US East 1 (Ohio)"},
+      { "value": "us-east-2", "text": "US East 2 (N. Virginia)"},
+      { "value": "us-west-1", "text": "US West 1 (N. California)"},
+      { "value": "us-west-2", "text": "US West 1 (Oregon)"},
+    ] 
+  }
+)
+frontend.input_rows ( input_rows )
 ```
 ### Submit forms with different data and retrieve data from queue in python.
 ```
