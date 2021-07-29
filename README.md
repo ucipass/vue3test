@@ -6,7 +6,7 @@ The input and output fields can be dynamically populated by just using python ca
 pip install ioform
 ```
 ## Example
-![grab-landing-page](https://github.com/ucipass/vue3test/blob/master/ioform.gif)
+![grab-landing-page](https://raw.githubusercontent.com/ucipass/vue3test/3a7efbdeac4c68f7bdb492e83fc88631212c0eb3/ioform.gif)
 
 ## Description
 ### Initialize the web frontend with a single input row "example".
